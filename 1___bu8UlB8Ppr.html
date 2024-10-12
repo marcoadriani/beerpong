@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <title>Tavolo 1</title>
+    <style>
+        body 
+        {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column; /* Disporre i gruppi uno sopra l'altro */
+            align-items: center; /* Centro il contenuto orizzontalmente */
+            font-size: 20px; /* Dimensione del font generale */
+        }
+
+        .table-header 
+        {
+            font-size: 36px; /* Dimensione del font per il nome del tavolo */
+            font-weight: bold;
+            margin-bottom: 10px; /* Spazio ridotto sotto il nome del tavolo */
+        }
+
+        #endGameButton 
+        {
+            margin-top: 10px; /* Distanza ridotta dal nome del tavolo */
+            margin-bottom: 20px; /* Spazio aggiunto sotto il pulsante */
+            padding: 20px;
+            font-size: 24px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block; /* Assicurati che il pulsante occupi tutta la larghezza disponibile */
+            width: 200px; /* Larghezza fissa per il pulsante, regolabile */
+            z-index: 1000; /* Assicurati che il pulsante sia sopra gli altri elementi */
+            user-select: none; /* Impedisce la selezione del testo */
+            -webkit-user-select: none; /* Per browser WebKit */
+            -ms-user-select: none; /* Per browser Internet Explorer */
+        }
+
+            #endGameButton:active 
+            {
+                background-color: #0056b3;
+            }
+
+        .team 
+        {
+            border: 2px solid #ddd; /* Spessore del bordo */
+            padding: 20px; /* Padding aumentato */
+            border-radius: 8px; /* Raggio del bordo arrotondato */
+            width: 840px; /* Larghezza della casella squadra */
+            box-sizing: border-box; /* Include padding e bordo nella larghezza totale */
+            margin-bottom: 40px; /* Margine tra le squadre */
+            background-color: #f9f9f9; /* Sfondo chiaro */
+            overflow: auto; /* Permette lo scroll se necessario */
+            transition: background-color 0.5s ease; /* Transizione per cambiamenti di colore */
+        }
+
+            .team.concludibile-verde 
+            {
+                background-color: #d4edda;
+            }
+
+            .team.concludibile-rosso 
+            {
+                background-color: #f8d7da;
+            }
+
+            .team.concludibile-bianco 
+            {
+                background-color: #ffffff;
+            }
+
+            .team h2 
+            {
+                margin: 0;
+                text-align: center;
+                font-size: 32px; /* Dimensione del font per il titolo della squadra */
+            }
+
+        .player-row 
+        {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Spazio tra i gruppi */
+            margin-bottom: 20px; /* Margine tra le righe dei giocatori */
+            font-size: 20px; /* Dimensione del font per le righe dei giocatori */
+        }
+
+        .player-info 
+        {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Spazio tra nome e punteggio */
+            flex: 2; /* Aumenta la dimensione del contenuto */
+        }
+
+            .player-info span 
+            {
+                display: inline-block;
+                width: 300px; /* Larghezza fissa per i nomi dei giocatori */
+                font-size: 24px; /* Dimensione del font per i nomi dei giocatori */
+            }
+
+        .score 
+        {
+            display: inline-block;
+            width: 80px; /* Larghezza della casella di punteggio */
+            text-align: center;
+            font-size: 16px; /* Riduce la dimensione del font per i punteggi */
+        }
+
+        .actions 
+        {
+            display: flex;
+            flex: 1; /* Espande per occupare lo spazio rimanente */
+            align-items: center;
+            justify-content: center; /* Centra i pulsanti */
+            gap: 10px; /* Distanza tra i pulsanti */
+        }
+
+        button 
+        {
+            margin: 0;
+            padding: 20px; /* Padding dei pulsanti */
+            font-size: 24px; /* Dimensione del font dei pulsanti */
+            width: 80px; /* Larghezza dei pulsanti */
+            height: 80px; /* Altezza dei pulsanti uguale alla larghezza */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Allinea il testo al centro del pulsante */
+            box-sizing: border-box; /* Include padding e bordo nella dimensione totale */
+        }
+
+        .total-row 
+        {
+            display: flex;
+            justify-content: space-between; /* Spazio tra il totale e il punteggio */
+            margin-top: 20px; /* Margine superiore */
+            font-weight: bold;
+            border-top: 2px solid #ddd; /* Spessore del bordo superiore */
+            padding-top: 20px; /* Padding superiore */
+            font-size: 20px; /* Dimensione del font per la riga totale */
+        }
+
+            .total-row span 
+            {
+                text-align: right; /* Allinea il testo totale a destra */
+            }
+    </style>
+    <script>
+        async function loadData() {
+            try
+            {
+                const response = await fetch(`/datiTavolo/1___bu8UlB8Ppr`);
+                if (!response.ok)
+                {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Dati dei tavoli ricevuti:', data);
+
+                document.getElementById('team1_name').innerText = data.Team1.Name;
+                document.getElementById('team1_player1_name').innerText = data.Team1.Player1.Name;
+                document.getElementById('team1_player1_score').innerText = data.Team1.Player1.Score;
+                document.getElementById('team1_player2_name').innerText = data.Team1.Player2.Name;
+                document.getElementById('team1_player2_score').innerText = data.Team1.Player2.Score;
+                document.getElementById('team1_total').innerText = data.Team1.TotalScore;
+
+                document.getElementById('team2_name').innerText = data.Team2.Name;
+                document.getElementById('team2_player1_name').innerText = data.Team2.Player1.Name;
+                document.getElementById('team2_player1_score').innerText = data.Team2.Player1.Score;
+                document.getElementById('team2_player2_name').innerText = data.Team2.Player2.Name;
+                document.getElementById('team2_player2_score').innerText = data.Team2.Player2.Score;
+                document.getElementById('team2_total').innerText = data.Team2.TotalScore;
+
+                const teams = document.querySelectorAll('.team');
+
+                if (teams.length >= 2)
+                {
+                    const team1 = teams[0];
+                    const team2 = teams[1];
+
+                    team1.classList.remove('concludibile-verde', 'concludibile-rosso', 'concludibile-bianco');
+                    team2.classList.remove('concludibile-verde', 'concludibile-rosso', 'concludibile-bianco');
+
+                    if (data.Team1.Concludibile && data.Team2.Concludibile) {
+                        team1.classList.add('concludibile-rosso');
+                        team2.classList.add('concludibile-verde');
+                    }
+                    else if (data.Team1.Concludibile) {
+                        team1.classList.add('concludibile-verde');
+                        team2.classList.add('concludibile-rosso');
+                    }
+                    else if (data.Team2.Concludibile) {
+                        team1.classList.add('concludibile-rosso');
+                        team2.classList.add('concludibile-verde');
+                    }
+                    else
+                    {
+                        team1.classList.add('concludibile-bianco');
+                        team2.classList.add('concludibile-bianco');
+                    }
+                }
+                else
+                {
+                    console.error('Meno di due elementi .team trovati.');
+                }
+            }
+            catch (error)
+            {
+                console.error('Errore nel caricamento dei dati tavolo:', error);
+            }
+        }
+
+        async function updateData(team, player, action)
+        {
+            try
+            {
+                await fetch(`/command/1___bu8UlB8Ppr/${team}/${player}/${action}`);
+                loadData();
+            } catch (error) {
+                console.error('Errore nell\'aggiornamento del punteggio:', error);
+            }
+        }
+
+        async function terminateGame()
+        {
+            try
+            {
+                await fetch(`/terminate/1___bu8UlB8Ppr`, { method: 'POST' });
+                console.log('Partita terminata.');
+                // Aggiungi eventuale logica aggiuntiva per gestire la terminazione del gioco
+            } catch (error) {
+                console.error('Errore nella terminazione della partita:', error);
+            }
+        }
+
+        window.onload = function ()
+        {
+            loadData(); // Carica i punteggi al caricamento della pagina
+            setInterval(loadData, 1000); // Aggiorna i punteggi ogni 1 secondo
+
+            let buttonPressTimeout;
+
+            function startTerminateGame() {
+                buttonPressTimeout = setTimeout(terminateGame, 1000); // Attiva la terminazione dopo 1 secondo
+            }
+
+            function cancelTerminateGame() {
+                clearTimeout(buttonPressTimeout); // Annulla la terminazione se il pulsante viene rilasciato prima di un 1 secondo
+            }
+
+            const endGameButton = document.getElementById('endGameButton');
+
+            // Gestione eventi per dispositivi con mouse
+            endGameButton.addEventListener('mousedown', startTerminateGame);
+            endGameButton.addEventListener('mouseup', cancelTerminateGame);
+            endGameButton.addEventListener('mouseleave', cancelTerminateGame);
+
+            // Gestione eventi per dispositivi touch
+            endGameButton.addEventListener('touchstart', startTerminateGame);
+            endGameButton.addEventListener('touchend', cancelTerminateGame);
+            endGameButton.addEventListener('touchcancel', cancelTerminateGame);
+        };
+    </script>
+</head>
+<body>
+    <div class='table-header' id='table_name'>Tavolo 1</div>
+    <button id="endGameButton">Termina Partita</button>
+    <div class='team'>
+        <h2 id='team1_name'>Squadra1</h2>
+        <div class='player-row'>
+            <div class='player-info'>
+                <span id='team1_player1_name'>Giocatore1</span>
+                <span id='team1_player1_score' class='score'>x</span>
+            </div>
+            <div class='actions'>
+                <button onclick='updateData("team1", "player1", "decrement")'>-</button>
+                <button onclick='updateData("team1", "player1", "increment")'>+</button>
+            </div>
+        </div>
+        <div class='player-row'>
+            <div class='player-info'>
+                <span id='team1_player2_name'>Giocatore2</span>
+                <span id='team1_player2_score' class='score'>x</span>
+            </div>
+            <div class='actions'>
+                <button onclick='updateData("team1", "player2", "decrement")'>-</button>
+                <button onclick='updateData("team1", "player2", "increment")'>+</button>
+            </div>
+        </div>
+        <div class='total-row'>
+            <span>Totale</span>
+            <span id='team1_total' class='score'>x</span>
+        </div>
+    </div>
+    <div class='team'>
+        <h2 id='team2_name'>Squadra2</h2>
+        <div class='player-row'>
+            <div class='player-info'>
+                <span id='team2_player1_name'>Giocatore1</span>
+                <span id='team2_player1_score' class='score'>x</span>
+            </div>
+            <div class='actions'>
+                <button onclick='updateData("team2", "player1", "decrement")'>-</button>
+                <button onclick='updateData("team2", "player1", "increment")'>+</button>
+            </div>
+        </div>
+        <div class='player-row'>
+            <div class='player-info'>
+                <span id='team2_player2_name'>Giocatore2</span>
+                <span id='team2_player2_score' class='score'>x</span>
+            </div>
+            <div class='actions'>
+                <button onclick='updateData("team2", "player2", "decrement")'>-</button>
+                <button onclick='updateData("team2", "player2", "increment")'>+</button>
+            </div>
+        </div>
+        <div class='total-row'>
+            <span>Totale</span>
+            <span id='team2_total' class='score'>x</span>
+        </div>
+    </div>
+</body>
+</html>

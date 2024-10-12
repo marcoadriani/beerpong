@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizzazione Gironi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('../immagini/Sughero.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center; /* Allinea il contenuto orizzontalmente */
+            align-items: center; /* Allinea il contenuto verticalmente */
+            height: 100vh; /* Assicura che il body occupi l'intera altezza della finestra */
+            overflow: hidden; /* Nascondi le barre di scorrimento della finestra */
+            transform: scale(0.8); /* Cala lo zoom del 20% */
+            transform-origin: center center; /* Mantiene il contenuto centrato */
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            max-width: 1400px; /* Aumenta la larghezza massima per il contenitore */
+            box-sizing: border-box;
+        }
+
+
+        .girone-box {
+            flex: 1 1 calc(100% - 20px); /* Cambia a una colonna, tenendo conto del gap */
+            max-width: calc(100% - 20px); /* Limita la larghezza massima */
+            background: linear-gradient(135deg, #f0f4f8, #e1e8ee);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Nascondi le barre di scorrimento interne */
+            padding: 10px;
+            box-sizing: border-box; /* Include padding e border nella larghezza totale */
+        }
+
+        .team-container {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Occupare tutto lo spazio disponibile */
+            margin-bottom: 0px; /* Aggiungi un margine inferiore per la separazione */
+        }
+
+            .girone-box h2 {
+                margin: 0 0 0px;
+                font-size: 24px;
+                text-align: center;
+                color: #333;
+            }
+
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+
+            .team-container h3 {
+                margin: 0;
+                font-size: 22px;
+                text-align: center;
+                color: dodgerblue; /* Colore del nome della squadra */
+            }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .progress {
+            flex: 1;
+            height: 20px;
+            background-color: #b3d9ff; /* Azzurro chiaro */
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #007bff; /* Blu scuro per la progressione */
+            text-align: center;
+            color: black; /* Colore del testo della progress bar in nero */
+            line-height: 20px;
+            border-radius: 10px;
+            transition: width 0.3s ease; /* Transizione per un effetto più fluido */
+        }
+
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .punteggio-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .score {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .girone-box {
+                flex: 1 1 calc(100% - 20px); /* Una colonna su schermi piccoli */
+                max-width: calc(100% - 20px); /* Limita la larghezza massima */
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            .team-container {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+    <script>
+        async function loadGironiData() {
+            try {
+                const response = await fetch('/datiAllGironi'); // URL dell'endpoint che ritorna i dati dei gironi
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Dati dei gironi ricevuti:', data);
+
+                const container = document.querySelector('.container');
+                container.innerHTML = ''; // Pulisce il contenitore esistente
+
+                data.Gironi.forEach((girone) => {
+                    const gironeBox = document.createElement('div');
+                    gironeBox.className = 'girone-box';
+
+                    // Intestazione del girone
+                    gironeBox.innerHTML = `<h2>Girone: ${girone.NomeGirone}</h2>`;
+
+                    // Creazione della sezione per le squadre
+                    const contentWrapper = document.createElement('div');
+                    contentWrapper.className = 'content-wrapper';
+
+                    // Sezione delle squadre
+                    let teamsHtml = '';
+                    girone.Squadre.forEach((team) => {
+                        const percentage = (team.PartiteFatte / team.PartiteDaFare) * 100;
+                        teamsHtml += `
+                                <div class="team-container">
+                                    <h3>${team.Name}</h3>
+                                    <div class="divider"></div>
+                                    <div class="team">
+                                        <div class="progress-container">
+                                            <div class="progress-label">Partite:</div>
+                                            <div class="progress">
+                                                <div class="progress-bar" style="width: ${percentage}%;">${team.PartiteFatte}/${team.PartiteDaFare}</div>
+                                            </div>
+                                        </div>
+                                        <div class="total-row">
+                                            <div class="punteggio-label">Punteggio:</div>
+                                            <span class="score">${team.TotalScore}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                    });
+
+                    // Aggiungi le sezioni alla wrapper del girone
+                    contentWrapper.innerHTML = teamsHtml;
+                    gironeBox.appendChild(contentWrapper);
+
+                    // Aggiungi la box del girone al contenitore
+                    container.appendChild(gironeBox);
+                });
+            } catch (error) {
+                console.error('Errore nel caricamento dei dati dei gironi:', error);
+            }
+        }
+
+        window.onload = function () {
+            loadGironiData(); // Carica i dati al caricamento della pagina
+            //setInterval(loadGironiData, 1000); // Aggiorna i dati ogni 1 secondo
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Le box dei gironi saranno aggiunte qui dinamicamente -->
+    </div>
+</body>
+</html>

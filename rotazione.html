@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor beerpong</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            box-sizing: border-box;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        iframe {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            height: calc(100vh - 50px);
+            border: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+            iframe.visible {
+                opacity: 1;
+            }
+
+        #avvisi-container {
+            position: absolute;
+            top: 0;
+            width: 100vw;
+            height: 50px;
+            background-color: #333;
+            color: #fff;
+            font-size: 1.5rem;
+            line-height: 50px;
+            overflow: hidden;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+        }
+
+        #avviso {
+            position: absolute;
+            left: 100%; /* Posizioniamo l'elemento fuori dallo schermo a destra */
+            white-space: nowrap;
+            will-change: transform;
+        }
+
+        /* La definizione delle keyframes sarà gestita dinamicamente tramite JavaScript */
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="avvisi-container">
+            <div id="avviso"></div>
+        </div>
+        <iframe id="content-frame" src=""></iframe>
+    </div>
+    <script>
+        let pages = [];
+        let currentIndex = 0;
+        let lastPages = [];
+        let changePageInterval = null;
+
+        async function loadPagesFromServer() {
+            try {
+                const response = await fetch('/datiRotazione');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Pages received:', data);
+
+                if (JSON.stringify(data.LinkPagine) !== JSON.stringify(lastPages)) {
+                    lastPages = data.LinkPagine;
+                    pages = data.LinkPagine;
+                    currentIndex = 0;
+
+                    if (changePageInterval) {
+                        clearInterval(changePageInterval);
+                    }
+
+                    if (pages.length > 0) {
+                        loadNextPage();
+                        changePageInterval = setInterval(loadNextPage, 10000);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading pages from server:', error);
+            }
+        }
+
+        function loadNextPage() {
+            const iframe = document.getElementById('content-frame');
+            iframe.classList.remove('visible');
+
+            setTimeout(() => {
+                iframe.src = pages[currentIndex];
+                iframe.onload = () => {
+                    iframe.classList.add('visible');
+                };
+                currentIndex = (currentIndex + 1) % pages.length;
+            }, 1000);
+        }
+
+        let avvisi = [];
+        let avvisoElement = document.getElementById('avviso');
+        let animating = false;
+
+        async function loadAvvisiFromServer() {
+            try {
+                const response = await fetch('/datiAvvisi');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Dati avvisi ricevuti:', data);
+
+                const newAvvisi = data.Avvisi || [];
+                syncAvvisi(newAvvisi);
+            } catch (error) {
+                console.error('Error loading avvisi from server:', error);
+            }
+        }
+
+        function syncAvvisi(newAvvisi) {
+            avvisi = newAvvisi;
+            if (!animating) {
+                updateAvviso();
+            }
+        }
+
+        function updateAvviso() {
+            if (avvisi.length > 0) {
+                animating = true;
+                let avviso = avvisi[0]; // Mostra il primo avviso
+                avvisoElement.textContent = avviso;
+
+                // Forza il reflow per applicare l'animazione
+                avvisoElement.style.animation = 'none';
+                avvisoElement.offsetHeight; // Forza il reflow
+
+                const containerWidth = avvisoElement.parentElement.offsetWidth;
+                const textWidth = avvisoElement.scrollWidth;
+                const scrollDistance = textWidth + containerWidth; // Distanza totale che il testo deve percorrere
+                const scrollSpeed = 100; // Velocità dello scorrimento in pixel al secondo
+                const scrollDuration = scrollDistance / scrollSpeed; // Durata dell'animazione in secondi
+
+                // Crea una regola keyframe dinamicamente
+                const keyframes = `
+                        @keyframes scroll {
+                            from {
+                                transform: translateX(${textWidth}px);
+                            }
+                            to {
+                                transform: translateX(-${textWidth + containerWidth}px);
+                            }
+                        }
+                    `;
+                const styleSheet = document.createElement("style");
+                styleSheet.type = "text/css";
+                styleSheet.innerText = keyframes;
+                document.head.appendChild(styleSheet);
+
+                // Aggiungi l'animazione CSS
+                avvisoElement.style.animation = `scroll ${scrollDuration}s linear`;
+
+                // Gestisci il ciclo degli avvisi
+                setTimeout(() => {
+                    confermaInvioAvvisoAlServer(avviso);
+                    avvisi.shift(); // Rimuovi il primo avviso dopo che è stato visualizzato
+                    animating = false;
+                    updateAvviso(); // Passa al prossimo avviso
+                }, (scrollDuration + 1) * 1000); // Aggiungi un secondo di attesa dopo la fine dell'animazione
+            } else {
+                avvisoElement.textContent = ''; // Nascondi il testo se non ci sono avvisi
+                avvisoElement.style.animation = 'none'; // Ferma l'animazione se non ci sono avvisi
+                animating = false;
+            }
+        }
+
+        function confermaInvioAvvisoAlServer(stringaDaInviare) {
+            fetch('/avvisoInviato', { // L'URL del server che riceve la stringa
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Imposta il tipo di contenuto come JSON
+                },
+                body: JSON.stringify({ messaggio: stringaDaInviare }), // Converte la stringa in JSON
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Avviso inviato con successo.');
+                    } else {
+                        console.error('Errore durante l\'invio dell\'avviso:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore nella connessione:', error);
+                });
+        }
+
+
+        window.onload = function () {
+            loadPagesFromServer();
+            setInterval(loadPagesFromServer, 10000);
+
+            loadAvvisiFromServer();
+            setInterval(loadAvvisiFromServer, 3000);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizzazione Tavoli</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-image: url('../immagini/Sughero.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: nowrap; /* Mantiene i tavoli su una sola riga */
+            overflow-x: auto; /* Abilita lo scroll orizzontale se necessario */
+            overflow-y: hidden; /* Nasconde lo scroll verticale */
+            gap: 10px;
+            box-sizing: border-box;
+            align-items: flex-start; /* Allinea gli elementi all'inizio verticalmente */
+            padding: 10px; /* Spazio aggiuntivo per evitare che il contenuto tocchi i bordi */
+        }
+
+        .tavolo-box {
+            display: flex;
+            flex-direction: column;
+            flex: 0 0 auto; /* Mantiene la dimensione fissa degli elementi */
+            width: 300px; /* Imposta una larghezza fissa per ogni tavolo */
+            background: linear-gradient(135deg, #f0f4f8, #e1e8ee);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 10px;
+            box-sizing: border-box; /* Include padding e border nella larghezza e altezza totale */
+        }
+
+        .team-container {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .tavolo-box h2 {
+            margin: 0;
+            font-size: 24px;
+            text-align: center;
+            color: #333;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column; /* Disposizione verticale */
+            justify-content: space-between;
+            flex: 1; /* Permette al content-wrapper di occupare tutto lo spazio disponibile */
+        }
+
+        .team-container h3 {
+            margin: 0;
+            font-size: 22px;
+            text-align: center;
+            color: dodgerblue;
+        }
+
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .punteggio-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .score {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .total-score {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .tavolo-box {
+                width: 100%;
+                height: auto; /* Imposta altezza automatica per schermi piccoli */
+            }
+
+            .container {
+                flex-direction: column; /* Cambia la direzione su schermi piccoli */
+                overflow-x: visible; /* Rimuove lo scroll orizzontale su schermi piccoli */
+            }
+        }
+    </style>
+    <script>
+        async function loadTavoliData() {
+            try {
+                const response = await fetch('/datiAllTavoli'); // URL dell'endpoint che ritorna i dati dei tavoli
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Dati dei tavoli ricevuti:', data);
+
+                const container = document.querySelector('.container');
+                container.innerHTML = ''; // Pulisce il contenitore esistente
+
+                data.Tavoli.forEach((tavolo) => {
+                    const tavoloBox = document.createElement('div');
+                    tavoloBox.className = 'tavolo-box';
+
+                    // Intestazione del tavolo
+                    tavoloBox.innerHTML = `<h2>Tavolo ${tavolo.NomeTavolo}</h2>`;
+
+                    // Creazione della sezione per le squadre
+                    const contentWrapper = document.createElement('div');
+                    contentWrapper.className = 'content-wrapper';
+
+                    // Sezione delle squadre
+                    let teamsHtml = '';
+
+                    // Team 1
+                    const team1 = tavolo.Team1;
+                    teamsHtml += `
+                                        <div class="team-container">
+                                            <h3>${team1.Name}</h3>
+                                            <div class="divider"></div>
+                                            <div class="team">
+                                                <div class="total-row">
+                                                    <div class="punteggio-label">${team1.Player1.Name}:</div>
+                                                    <span class="score">${team1.Player1.Score}</span>
+                                                </div>
+                                                <div class="total-row">
+                                                    <div class="punteggio-label">${team1.Player2.Name}:</div>
+                                                    <span class="score">${team1.Player2.Score}</span>
+                                                </div>
+                                            </div>
+                                            <div class="total-score">${team1.TotalScore} punti</div>
+                                        </div>
+                                    `;
+
+                    // Team 2
+                    const team2 = tavolo.Team2;
+                    teamsHtml += `
+                                        <div class="team-container">
+                                            <h3>${team2.Name}</h3>
+                                            <div class="divider"></div>
+                                            <div class="team">
+                                                <div class="total-row">
+                                                    <div class="punteggio-label">${team2.Player1.Name}:</div>
+                                                    <span class="score">${team2.Player1.Score}</span>
+                                                </div>
+                                                <div class="total-row">
+                                                    <div class="punteggio-label">${team2.Player2.Name}:</div>
+                                                    <span class="score">${team2.Player2.Score}</span>
+                                                </div>
+                                            </div>
+                                            <div class="total-score">${team2.TotalScore} punti</div>
+                                        </div>
+                                    `;
+
+                    // Aggiungi le sezioni alla wrapper del tavolo
+                    contentWrapper.innerHTML = teamsHtml;
+                    tavoloBox.appendChild(contentWrapper);
+
+                    // Aggiungi la box del tavolo al contenitore
+                    container.appendChild(tavoloBox);
+                });
+            } catch (error) {
+                console.error('Errore nel caricamento dei dati dei tavoli:', error);
+            }
+        }
+
+        window.onload = function () {
+            loadTavoliData(); // Carica i dati al caricamento della pagina
+            //setInterval(loadTavoliData, 1000); // Aggiorna i dati ogni 1 secondo
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Le box dei tavoli saranno aggiunte qui dinamicamente -->
+    </div>
+</body>
+</html>

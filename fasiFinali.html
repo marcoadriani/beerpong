@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fasi Finali</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('../immagini/Sughero.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .matches {
+            width: 63%; /* Ridotto del 30% rispetto al 90% */
+            height: 63%; /* Ridotto del 30% rispetto al 90% */
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .match {
+            background-color: #ffffff;
+            border-radius: 5.6px; /* Ridotto del 30% rispetto a 8px */
+            border: 0.7px solid #ddd; /* Ridotto del 30% rispetto a 1px */
+            box-shadow: 0 1.4px 2.8px rgba(0, 0, 0, 0.1); /* Ridotto del 30% rispetto a 2px */
+            padding: 7px; /* Ridotto del 30% rispetto a 10px */
+            width: 245px; /* Ridotto del 30% rispetto a 350px */
+            height: 106px; /* Ridotto del 30% rispetto a 140px */
+            position: absolute;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 70px; /* Ridotto del 30% rispetto a 100px */
+        }
+
+        .team-image-wrapper {
+            width: 70px; /* Ridotto del 30% rispetto a 100px */
+            height: 70px; /* Ridotto del 30% rispetto a 100px */
+            margin-bottom: 7px; /* Ridotto del 30% rispetto a 10px */
+            overflow: hidden;
+            border-radius: 5.6px; /* Ridotto del 30% rispetto a 8px */
+            flex-shrink: 0;
+        }
+
+            .team-image-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .vs {
+            font-weight: bold;
+            color: dodgerblue;
+            font-size: 16.8px; /* Ridotto del 30% rispetto a 24px */
+            margin: 0 7px; /* Ridotto del 30% rispetto a 10px */
+        }
+
+        .winner {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .loser {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        line {
+            stroke: black; /* Colore delle linee */
+            stroke-width: 4; /* Ridotto del 30% rispetto a 2px */
+        }
+
+        .first-second-box {
+            position: absolute;
+            width: 98px; /* Ridotto del 30% rispetto a 140px */
+            height: 98px; /* Ridotto del 30% rispetto a 140px */
+            background: linear-gradient(135deg, gold 40%, silver 60%);
+            border-radius: 5.6px; /* Ridotto del 30% rispetto a 8px */
+            box-shadow: 0 1.4px 2.8px rgba(0, 0, 0, 0.1); /* Ridotto del 30% rispetto a 2px */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            padding: 7px; /* Ridotto del 30% rispetto a 10px */
+            box-sizing: border-box;
+        }
+
+            .first-second-box .top-left {
+                position: absolute;
+                top: 7px; /* Ridotto del 30% rispetto a 10px */
+                left: 7px; /* Ridotto del 30% rispetto a 10px */
+                font-size: 25.2px; /* Ridotto del 30% rispetto a 36px */
+                font-weight: bold;
+                z-index: 2;
+            }
+
+            .first-second-box .bottom-right {
+                position: absolute;
+                bottom: 7px; /* Ridotto del 30% rispetto a 10px */
+                right: 7px; /* Ridotto del 30% rispetto a 10px */
+                font-size: 25.2px; /* Ridotto del 30% rispetto a 36px */
+                font-weight: bold;
+                z-index: 2;
+            }
+
+        .third-fourth-box {
+            position: absolute;
+            width: 98px; /* Ridotto del 30% rispetto a 140px */
+            height: 98px; /* Ridotto del 30% rispetto a 140px */
+            background: linear-gradient(135deg, #cd7f32 40%, #d4b39e 60%);
+            border-radius: 5.6px; /* Ridotto del 30% rispetto a 8px */
+            box-shadow: 0 1.4px 2.8px rgba(0, 0, 0, 0.1); /* Ridotto del 30% rispetto a 2px */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            padding: 7px; /* Ridotto del 30% rispetto a 10px */
+            box-sizing: border-box;
+        }
+
+            .third-fourth-box .top-left {
+                position: absolute;
+                top: 7px; /* Ridotto del 30% rispetto a 10px */
+                left: 7px; /* Ridotto del 30% rispetto a 10px */
+                font-size: 25.2px; /* Ridotto del 30% rispetto a 36px */
+                font-weight: bold;
+                z-index: 2;
+            }
+
+            .third-fourth-box .bottom-right {
+                position: absolute;
+                bottom: 7px; /* Ridotto del 30% rispetto a 10px */
+                right: 7px; /* Ridotto del 30% rispetto a 10px */
+                font-size: 25.2px; /* Ridotto del 30% rispetto a 36px */
+                font-weight: bold;
+                z-index: 2;
+            }
+    </style>
+    <script>
+        async function loadFasiFinaliData() {
+            try {
+                const response = await fetch('/datiFasiFinali');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Dati delle fasi finali ricevuti:', data);
+
+                const container = document.querySelector('.matches');
+                container.innerHTML = '';
+
+                const positions = {
+                    1: [
+                        { top: 40, left: 0 },   // Aumentato spazio verticale
+                        { top: 160, left: 0 },  // Aumentato spazio verticale
+                        { top: 280, left: 0 },  // Aumentato spazio verticale
+                        { top: 400, left: 0 },  // Aumentato spazio verticale
+                        { top: 520, left: 0 },  // Aumentato spazio verticale
+                        { top: 640, left: 0 },  // Aumentato spazio verticale
+                        { top: 760, left: 0 },  // Aumentato spazio verticale
+                        { top: 880, left: 0 }   // Aumentato spazio verticale
+                    ],
+                    2: [
+                        { top: (40 + 160) / 2, left: 400 },
+                        { top: (280 + 400) / 2, left: 400 },
+                        { top: (520 + 640) / 2, left: 400 },
+                        { top: (760 + 880) / 2, left: 400 }
+                    ],
+                    3: [
+                        { top: ((40 + 160) / 2 + (280 + 400) / 2) / 2, left: 800 },
+                        { top: ((520 + 640) / 2 + (760 + 880) / 2) / 2, left: 800 }
+                    ],
+                    4: [
+                        { top: (((40 + 160) / 2 + (280 + 400) / 2) / 2 + ((520 + 640) / 2 + (760 + 880) / 2) / 2) / 2, left: 1200 }
+                    ],
+                    5: [
+                        { top: (((40 + 160) / 2 + (280 + 400) / 2) / 2 + ((520 + 640) / 2 + (760 + 880) / 2) / 2) / 2 + 100, left: 1200 }
+                    ]
+                };
+
+
+
+                const createFase = (partite, faseIndex) => {
+                    partite.forEach((partita, index) => {
+                        const matchDiv = document.createElement('div');
+                        matchDiv.className = 'match';
+                        matchDiv.style.top = positions[faseIndex][index].top + 'px';
+                        matchDiv.style.left = positions[faseIndex][index].left + 'px';
+
+                        const squadra1Div = document.createElement('div');
+                        squadra1Div.className = 'team';
+
+                        // Aggiungi la classe vincitore o perdente
+                        const homeClass = partita.Vincitore === 1 ? 'winner' : partita.Vincitore === 2 ? 'loser' : 'white';
+                        const awayClass = partita.Vincitore === 2 ? 'winner' : partita.Vincitore === 1 ? 'loser' : 'white';
+
+                        if (partita.ImageUrl1 && partita.ImageUrl1.trim() !== "") {
+                            squadra1Div.innerHTML = `
+                                    <div class="team-image-wrapper">
+                                        <img src="${partita.ImageUrl1}" alt="${partita.Squadra1}">
+                                    </div>
+                                    <div class="${homeClass}">${partita.Squadra1}</div>
+                                `;
+                        } else {
+                            squadra1Div.innerHTML = `<div class="${homeClass}">${partita.Squadra1}</div>`;
+                        }
+
+                        const vs = document.createElement('div');
+                        vs.className = 'vs';
+                        vs.textContent = 'vs';
+
+                        const squadra2Div = document.createElement('div');
+                        squadra2Div.className = 'team';
+
+                        if (partita.ImageUrl2 && partita.ImageUrl2.trim() !== "") {
+                            squadra2Div.innerHTML = `
+                                    <div class="team-image-wrapper">
+                                        <img src="${partita.ImageUrl2}" alt="${partita.Squadra2}">
+                                    </div>
+                                    <div class="${awayClass}">${partita.Squadra2}</div>
+                                `;
+                        } else {
+                            squadra2Div.innerHTML = `<div class="${awayClass}">${partita.Squadra2}</div>`;
+                        }
+
+                        matchDiv.appendChild(squadra1Div);
+                        matchDiv.appendChild(vs);
+                        matchDiv.appendChild(squadra2Div);
+
+                        matchDiv.dataset.faseIndex = faseIndex;
+                        matchDiv.dataset.matchIndex = index;
+
+                        container.appendChild(matchDiv);
+                    });
+                };
+
+                createFase(data.Ottavi, 1);
+                createFase(data.Quarti, 2);
+                createFase(data.Semifinali, 3);
+                createFase(data.Finali_12, 4);
+                createFase(data.Finali_34, 5);
+
+                drawArrows();
+
+                // Aggiungi la casella dei risultati
+                addResultsBox();
+                // Calcola la dimensione del contenitore dopo il caricamento
+                calculateContainerSize();
+
+            } catch (error) {
+                console.error('Errore nel caricamento dei dati delle fasi finali:', error);
+            }
+        }
+
+        function calculateContainerSize() {
+            let maxRight = 0;
+            let maxBottom = 0;
+
+            const matches = document.querySelectorAll('.match');
+            matches.forEach(match => {
+                const matchRect = match.getBoundingClientRect();
+                const matchRight = matchRect.left + matchRect.width;
+                const matchBottom = matchRect.top + matchRect.height;
+
+                if (matchRight > maxRight) {
+                    maxRight = matchRight;
+                }
+
+                if (matchBottom > maxBottom) {
+                    maxBottom = matchBottom;
+                }
+            });
+
+            // Aggiungi dimensioni dei box di risultati
+            const resultsBoxes = document.querySelectorAll('.first-second-box, .third-fourth-box');
+            resultsBoxes.forEach(box => {
+                const boxRect = box.getBoundingClientRect();
+                const boxRight = boxRect.left + boxRect.width;
+                const boxBottom = boxRect.top + boxRect.height;
+
+                if (boxRight > maxRight) {
+                    maxRight = boxRight;
+                }
+
+                if (boxBottom > maxBottom) {
+                    maxBottom = boxBottom;
+                }
+            });
+
+            // Imposta le dimensioni del contenitore in base ai valori massimi
+            const container = document.querySelector('.matches');
+            container.style.width = (maxRight - container.getBoundingClientRect().left) + 'px';
+            container.style.height = (maxBottom - container.getBoundingClientRect().top) + 'px';
+
+            console.log(`Container dimensions set to: width=${container.style.width}, height=${container.style.height}`); // Debug
+        }
+
+        function drawArrows() {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            document.querySelector('.matches').appendChild(svg);
+
+            const matches = document.querySelectorAll('.match');
+            matches.forEach((match, index) => {
+                const faseIndex = parseInt(match.dataset.faseIndex);
+                const matchIndex = parseInt(match.dataset.matchIndex);
+
+                if (faseIndex < 4) { // Aggiungi frecce fino alla finale
+                    const nextFaseMatches = document.querySelectorAll(`.match[data-fase-index="${faseIndex + 1}"]`);
+
+                    if (nextFaseMatches.length > 0) {
+                        let targetMatch;
+
+                        if (faseIndex === 3) {
+                            // Collegamento dalle semifinali alla finale
+                            targetMatch = nextFaseMatches[0]; // La finale è la prima e unica partita della fase 4
+                        } else {
+                            targetMatch = nextFaseMatches[Math.floor(matchIndex / 2)];
+                        }
+
+                        if (targetMatch) {
+                            drawLine(svg, match, targetMatch);
+                        }
+                    }
+                }
+            });
+        }
+
+        function drawLine(svg, match, targetMatch) {
+            const startX = parseInt(match.style.left) + parseInt(match.offsetWidth);
+            const startY = parseInt(match.style.top) + parseInt(match.offsetHeight) / 2;
+            const endX = parseInt(targetMatch.style.left);
+            const endY = parseInt(targetMatch.style.top) + parseInt(targetMatch.offsetHeight) / 2;
+
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", startX);
+            line.setAttribute("y1", startY);
+            line.setAttribute("x2", endX);
+            line.setAttribute("y2", endY);
+            svg.appendChild(line);
+        }
+
+        function addResultsBox() {
+            const matchesContainer = document.querySelector('.matches');
+            const finalMatch = document.querySelector('.match[data-fase-index="4"]'); // Ultima partita
+
+            if (finalMatch) {
+                const resultsBox = document.createElement('div');
+                resultsBox.className = 'first-second-box';
+                resultsBox.style.top = finalMatch.style.top;
+                resultsBox.style.left = (parseInt(finalMatch.style.left) + 250) + 'px'; // Sposta a destra della partita finale
+
+                const topLeft = document.createElement('div');
+                topLeft.className = 'top-left';
+                topLeft.textContent = '1°';
+
+                const bottomRight = document.createElement('div');
+                bottomRight.className = 'bottom-right';
+                bottomRight.textContent = '2°';
+
+                resultsBox.appendChild(topLeft);
+                resultsBox.appendChild(bottomRight);
+
+                matchesContainer.appendChild(resultsBox);
+
+                // Aggiungi la casella per il terzo e quarto posto
+                const thirdFourthMatch = document.querySelector('.match[data-fase-index="5"]'); // Partita terzo e quarto posto
+
+                if (thirdFourthMatch) {
+                    const thirdFourthBox = document.createElement('div');
+                    thirdFourthBox.className = 'third-fourth-box';
+                    thirdFourthBox.style.top = thirdFourthMatch.style.top;
+                    thirdFourthBox.style.left = (parseInt(thirdFourthMatch.style.left) + 250) + 'px'; // Sposta a destra della partita terzo e quarto posto
+
+                    const thirdTopLeft = document.createElement('div');
+                    thirdTopLeft.className = 'top-left';
+                    thirdTopLeft.textContent = '3°';
+
+                    const thirdBottomRight = document.createElement('div');
+                    thirdBottomRight.className = 'bottom-right';
+                    thirdBottomRight.textContent = '4°';
+
+                    thirdFourthBox.appendChild(thirdTopLeft);
+                    thirdFourthBox.appendChild(thirdBottomRight);
+
+                    matchesContainer.appendChild(thirdFourthBox);
+                }
+            }
+        }
+
+        window.onload = loadFasiFinaliData;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="matches"></div>
+    </div>
+</body>
+</html>

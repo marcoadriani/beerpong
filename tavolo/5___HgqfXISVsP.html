@@ -3,7 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1' />
-    <title>Tavolo 3</title>
+    <title>Tavolo 5</title>
     <style>
         body 
         {
@@ -156,7 +156,7 @@
         async function loadData() {
             try
             {
-                const response = await fetch(`/datiTavolo/3___WPAwEFM1c7`);
+                const response = await fetch(`/datiTavolo/5___HgqfXISVsP`);
                 if (!response.ok)
                 {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -221,7 +221,7 @@
         {
             try
             {
-                await fetch(`/command/3___WPAwEFM1c7/${team}/${player}/${action}`);
+                await fetch(`/command/5___HgqfXISVsP/${team}/${player}/${action}`);
                 loadData();
             } catch (error) {
                 console.error('Errore nell\'aggiornamento del punteggio:', error);
@@ -232,7 +232,7 @@
         {
             try
             {
-                await fetch(`/terminate/3___WPAwEFM1c7`, { method: 'POST' });
+                await fetch(`/terminate/5___HgqfXISVsP`, { method: 'POST' });
                 console.log('Partita terminata.');
                 // Aggiungi eventuale logica aggiuntiva per gestire la terminazione del gioco
             } catch (error) {
@@ -270,7 +270,7 @@
     </script>
 </head>
 <body>
-    <div class='table-header' id='table_name'>Tavolo 3</div>
+    <div class='table-header' id='table_name'>Tavolo 5</div>
     <button id="endGameButton">Termina Partita</button>
     <div class='team'>
         <h2 id='team1_name'>Squadra1</h2>

@@ -156,7 +156,7 @@
         async function loadData() {
             try
             {
-                const response = await fetch(`/datiTavolo/4___Mne90L5XTd`);
+                const response = await fetch(`/datiTavolo/4___fFZtd71P87`);
                 if (!response.ok)
                 {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -221,7 +221,7 @@
         {
             try
             {
-                await fetch(`/command/4___Mne90L5XTd/${team}/${player}/${action}`);
+                await fetch(`/command/4___fFZtd71P87/${team}/${player}/${action}`);
                 loadData();
             } catch (error) {
                 console.error('Errore nell\'aggiornamento del punteggio:', error);
@@ -232,7 +232,7 @@
         {
             try
             {
-                await fetch(`/terminate/4___Mne90L5XTd`, { method: 'POST' });
+                await fetch(`/terminate/4___fFZtd71P87`, { method: 'POST' });
                 console.log('Partita terminata.');
                 // Aggiungi eventuale logica aggiuntiva per gestire la terminazione del gioco
             } catch (error) {
